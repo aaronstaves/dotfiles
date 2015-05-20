@@ -42,3 +42,39 @@ if [ -f "$LIQUIDPROMPT_FILE" ]; then
 else
 	echo "liquidprompt not found, skipping"
 fi
+
+
+# Vim setup
+echo "==> Setting up vim plugins"
+
+# Pathogen #
+echo "====> Setting up pathogen"
+mkdir -p ~/.vim/autoload ~/.vim/bundle && \
+
+if [ ! -f ~/.vim/autoload/pathogen.vim ]; then
+	echo "linking pathogen.vim"
+	ln -s `pwd`/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
+else
+	echo "pathogen.vim already exists.skipping"
+fi
+
+if [ -f ~/.vimrc ]; then
+	if grep -q 'execute pathogen#infect()' ~/.vimrc; then
+		echo "pathogen already found in .vimrc, skipping"
+	else
+		echo "pathogen not found in .vimrc, adding"
+		sed -i '1iexecute pathogen#infect()' ~/.vimrc
+	fi
+else
+	echo "could not find ~/.vimrc file"
+fi
+
+# Fugitive #
+echo "====> Setting up fugitive"
+
+if [ ! -f ~/.vim/bundile/vim-fugitive ]; then
+	echo "fugitive not found, adding"
+	ln -s `pwd`/vim-fugitive ~/.vim/bundle/vim-fugitive
+else
+	echo "fugitive found, skipping"
+fi
