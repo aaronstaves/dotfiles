@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 OS="Unknown"
 if [ `uname` == "Linux" ]; then
 	OS="Linux"
@@ -7,7 +6,71 @@ elif [ `uname` == "Darwin"]; then
 	OS="Darwin"
 fi
 
+
+_setup_tmux () {
+	# Tmux
+	echo "==> Setting up tmux"
+	if hash tmux 2>/dev/null; then
+		echo "tmux found, skipping"
+	else
+		echo "tmux not found, installing for $OS"
+		if [ "$OS" == "Linux" ]; then
+			sudo apt-get install tmux;
+		else
+			echo "Unsupported OS: $OS, skipping";
+		fi
+	fi
+}
+
+_setup_linux_packages () {
+	echo "==> Setting up linux pacakges"
+
+	LINUX_PACKAGES=( vim-nox python-pip python-setuptools python-dev python3 build-essential automake libtool )
+	for pkg in "${LINUX_PACKAGES[@]}"
+	do
+		echo "====> $pkg"
+		PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $pkg|grep "install ok installed")
+		if [ "" == "$PKG_OK" ]; then
+			echo "$pkg not found, installing";
+			sudo apt-get -y install $pkg
+		else
+			echo "$pkg already installed, skipping"
+		fi
+	done
+
+	PYTHON_PACKAGES=( psutil pyuv i3-py powerline-status )
+	for pkg in "${PYTHON_PACKAGES[@]}"
+	do
+		echo "====> $pkg"
+		PKG_OK=$(pip search $pkg|grep -i "installed")
+		if [ "" == "$PKG_OK" ]; then
+			echo "python package $pkg not found, installing";
+			sudo pip install $pkg
+		else
+			echo "python package $pkg already installed, skipping"
+		fi
+	done
+
+}
+
+_setup_packages () {
+	echo "CHECKING $OS"
+	if [ "$OS" == "Linux" ]; then
+		_setup_linux_packages
+	else
+		echo "cannot setup packages on OS: $OS, skipping"
+	fi
+}
+
+
+
+########
+# Start #
+########
+
 echo "==> Setting up on $OS system <==";
+
+_setup_packages
 
 _setup_tmux
 
@@ -66,7 +129,7 @@ if [ ! -f ~/.vim/autoload/pathogen.vim ]; then
 	echo "linking pathogen.vim"
 	ln -s `pwd`/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 else
-	echo "pathogen.vim already exists.skipping"
+	echo "pathogen.vim already exists, skipping"
 fi
 
 if [ -f ~/.vimrc ]; then
@@ -92,17 +155,3 @@ fi
 
 
 
-_setup_tmux () {
-	# Tmux
-	echo "==> Setting up tmux"
-	if hash tmux 2>/dev/null; then
-		echo "tmux found, skipping"
-	else
-		echo "tmux not found, installing for $OS"
-		if [ OS == "Linux" ]; then
-			sudo apt-get install tmux;
-		else
-			echo "Unsupported OS: $OS, skipping";
-		fi
-	fi
-}
