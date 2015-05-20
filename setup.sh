@@ -54,7 +54,6 @@ _setup_linux_packages () {
 }
 
 _setup_packages () {
-	echo "CHECKING $OS"
 	if [ "$OS" == "Linux" ]; then
 		_setup_linux_packages
 	else
@@ -129,17 +128,6 @@ if [ ! -f ~/.vim/autoload/pathogen.vim ]; then
 	ln -s `pwd`/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 else
 	echo "pathogen.vim already exists, skipping"
-fi
-
-if [ -f ~/.vimrc ]; then
-	if grep -q 'execute pathogen#infect()' ~/.vimrc; then
-		echo "pathogen already found in .vimrc, skipping"
-	else
-		echo "pathogen not found in .vimrc, adding"
-		sed -i '1iexecute pathogen#infect()' ~/.vimrc
-	fi
-else
-	echo "could not find ~/.vimrc file"
 fi
 
 # Fugitive #

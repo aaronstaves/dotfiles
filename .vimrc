@@ -1,3 +1,4 @@
+execute pathogen#infect()
 
 """ START keymappings.vim
 
