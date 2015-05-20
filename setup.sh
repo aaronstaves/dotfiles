@@ -96,8 +96,7 @@ fi
 
 # Submodules
 echo "==> Initializing submodules"
-git submodule init
-git submodule update
+git submodule update --init
 
 # Liquidprompt
 LIQUIDPROMPT_FILE=`pwd`/liquidprompt/liquidprompt
