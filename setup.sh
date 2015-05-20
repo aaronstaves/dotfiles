@@ -2,30 +2,34 @@
 OS="Unknown"
 if [ `uname` == "Linux" ]; then
 	OS="Linux"
-elif [ `uname` == "Darwin"]; then
+elif [ `uname` == "Darwin" ]; then
 	OS="Darwin"
 fi
 
-
-_setup_tmux () {
-	# Tmux
-	echo "==> Setting up tmux"
-	if hash tmux 2>/dev/null; then
-		echo "tmux found, skipping"
-	else
-		echo "tmux not found, installing for $OS"
-		if [ "$OS" == "Linux" ]; then
-			sudo apt-get install tmux;
+_setup_python_packages () {
+	PYTHON_PACKAGES=( psutil pyuv i3-py powerline-status )
+	for pkg in "${PYTHON_PACKAGES[@]}"
+	do
+		echo "====> $pkg"
+		PKG_OK=$(pip search $pkg|grep -i "installed")
+		if [ "" == "$PKG_OK" ]; then
+			echo "python package $pkg not found, installing";
+			if [ $OS == "Linux" ]; then
+				sudo pip install $pkg
+			else
+				pip install $pkg
+			fi
 		else
-			echo "Unsupported OS: $OS, skipping";
+			echo "python package $pkg already installed, skipping"
 		fi
-	fi
+	done
 }
+
 
 _setup_linux_packages () {
 	echo "==> Setting up linux pacakges"
 
-	LINUX_PACKAGES=( vim-nox python-pip python-setuptools python-dev python3 build-essential automake libtool )
+	LINUX_PACKAGES=( vim-nox python-pip python-setuptools python-dev python3 build-essential automake libtool tmux )
 	for pkg in "${LINUX_PACKAGES[@]}"
 	do
 		echo "====> $pkg"
@@ -38,24 +42,44 @@ _setup_linux_packages () {
 		fi
 	done
 
-	PYTHON_PACKAGES=( psutil pyuv i3-py powerline-status )
-	for pkg in "${PYTHON_PACKAGES[@]}"
+	_setup_python_packages
+
+}
+
+_setup_osx_packages() {
+	echo "==> Setting up osx packages"
+
+	echo "===> homebrew"
+	if test ! $(which brew); then
+		echo "homebrew not found, adding"
+		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	else
+		echo "found homebrew, updating"
+		brew update
+	fi
+
+	BREW_PACKAGES=( coreutils findutils bash macvim tmux wget python libtool automake )
+	for pkg in "${BREW_PACKAGES[@]}"
 	do
 		echo "====> $pkg"
-		PKG_OK=$(pip search $pkg|grep -i "installed")
-		if [ "" == "$PKG_OK" ]; then
-			echo "python package $pkg not found, installing";
-			sudo pip install $pkg
+		PKG_NOT_OK=$(brew info $pkg|grep -i "not installed")
+		if [ "" == "$PKG_NOT_OK" ]; then
+			echo "homebrew package $pkg already installed, skipping"
 		else
-			echo "python package $pkg already installed, skipping"
+			echo "homebrew package $pkg not found, installing";
+			brew install $pkg
 		fi
 	done
+
+	_setup_python_packages
 
 }
 
 _setup_packages () {
 	if [ "$OS" == "Linux" ]; then
 		_setup_linux_packages
+	elif [ "$OS" == "Darwin" ]; then
+		_setup_osx_packages
 	else
 		echo "cannot setup packages on OS: $OS, skipping"
 	fi
