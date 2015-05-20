@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+OS="Unknown"
+if [ `uname` == "Linux" ]; then
+	OS="Linux"
+elif [ `uname` == "Darwin"]; then
+	OS="Darwin"
+fi
+
+echo "==> Setting up on $OS system <==";
+
+_setup_tmux
+
 # Dotfiles
 echo "==> Linking Files"
 if [ ! -d ~/.config ]; then
@@ -72,9 +83,26 @@ fi
 # Fugitive #
 echo "====> Setting up fugitive"
 
-if [ ! -f ~/.vim/bundile/vim-fugitive ]; then
+if [ ! -d ~/.vim/bundle/vim-fugitive ]; then
 	echo "fugitive not found, adding"
 	ln -s `pwd`/vim-fugitive ~/.vim/bundle/vim-fugitive
 else
 	echo "fugitive found, skipping"
 fi
+
+
+
+_setup_tmux () {
+	# Tmux
+	echo "==> Setting up tmux"
+	if hash tmux 2>/dev/null; then
+		echo "tmux found, skipping"
+	else
+		echo "tmux not found, installing for $OS"
+		if [ OS == "Linux" ]; then
+			sudo apt-get install tmux;
+		else
+			echo "Unsupported OS: $OS, skipping";
+		fi
+	fi
+}
