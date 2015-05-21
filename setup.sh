@@ -15,7 +15,7 @@ _setup_python_packages () {
 		if [ "" == "$PKG_OK" ]; then
 			echo "python package $pkg not found, installing";
 			if [ $OS == "Linux" ]; then
-				sudo pip install $pkg
+				pip install --user $pkg
 			else
 				pip install $pkg
 			fi
