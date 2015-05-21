@@ -108,7 +108,7 @@ LP_ENABLE_RUNTIME=1
 LP_RUNTIME_THRESHOLD=15
 
 # Exclude specific commands from runtime calculations
-LP_RUNTIME_EXCLUDE_COMMAND_REGEX="^vi|^sleep|^ssh|^git commit" 
+LP_RUNTIME_EXCLUDE_COMMAND_REGEX="^vi|^sleep|^ssh|^git\scommit" 
 
 # Display the virtualenv that is currently activated, if any
 # Recommended value is 1
