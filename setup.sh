@@ -7,7 +7,7 @@ elif [ `uname` == "Darwin" ]; then
 fi
 
 _setup_python_packages () {
-	PYTHON_PACKAGES=( psutil pyuv i3-py powerline-status )
+	PYTHON_PACKAGES=( pyopenssl ndg-httpsclient pyasn1 psutil pyuv i3-py powerline-status )
 	for pkg in "${PYTHON_PACKAGES[@]}"
 	do
 		echo "====> $pkg"
@@ -15,7 +15,7 @@ _setup_python_packages () {
 		if [ "" == "$PKG_OK" ]; then
 			echo "python package $pkg not found, installing";
 			if [ $OS == "Linux" ]; then
-				sudo pip install $pkg
+				sudo -H pip install --user $pkg
 			else
 				pip install $pkg
 			fi
@@ -100,8 +100,6 @@ _setup_packages () {
 echo "==> Setting up on $OS system <==";
 
 _setup_packages
-
-_setup_tmux
 
 # Dotfiles
 echo "==> Linking Files"
