@@ -61,15 +61,21 @@ _setup_osx_packages() {
 	BREW_PACKAGES=( coreutils findutils bash macvim tmux wget python libtool automake )
 	for pkg in "${BREW_PACKAGES[@]}"
 	do
+		BREW_PARAMS=""
+		if [ $pkg == "macvim" ]; then
+			BREW_PARAMS="--override-system-vim"
+		fi
+
 		echo "====> $pkg"
 		PKG_NOT_OK=$(brew info $pkg|grep -i "not installed")
 		if [ "" == "$PKG_NOT_OK" ]; then
 			echo "homebrew package $pkg already installed, skipping"
 		else
 			echo "homebrew package $pkg not found, installing";
-			brew install $pkg
+			brew install $pkg $BREW_PARAMS
 		fi
 	done
+
 
 	_setup_python_packages
 
