@@ -29,7 +29,7 @@ _setup_python_packages () {
 _setup_linux_packages () {
 	echo "==> Setting up linux pacakges"
 
-	LINUX_PACKAGES=( vim vim-nox python-pip python-setuptools python-dev python3 build-essential automake libtool tmux )
+	LINUX_PACKAGES=( vim vim-nox python-pip python-setuptools python-dev python3 build-essential automake libtool tmux libffi-dev )
 	for pkg in "${LINUX_PACKAGES[@]}"
 	do
 		echo "====> $pkg"
