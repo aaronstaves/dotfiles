@@ -1,0 +1,13 @@
+#!/bin/bash
+
+line=`head -n 1 "$1"`
+
+if [[ ${#line} == 0 ]]
+  then
+    echo "No commit message, commit aborted"
+    exit -1
+else
+  exit 0
+fi
+
+# Put in BASE_DIR/.git/hooks/commit-msg. Make Executable.
