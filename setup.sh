@@ -116,6 +116,12 @@ else
 	echo ".tmux.conf exists, skipping"
 fi
 
+if [ ! -f ~/.config/tmux ]; then
+	ln -s `pwd`/.config/tmux ~/.config/tmux
+else
+	echo "tmux config dir exists, skipping"
+fi
+
 if [ ! -f ~/.vimrc ]; then
 	ln -s `pwd`/.vimrc ~/.vimrc
 else
@@ -168,6 +174,3 @@ if [ ! -d ~/.vim/bundle/vim-fugitive ]; then
 else
 	echo "fugitive found, skipping"
 fi
-
-
-

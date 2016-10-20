@@ -350,7 +350,7 @@ __git_refs ()
 				if [ -e "$dir/$i" ]; then echo $i; fi
 			done
 			format="refname:short"
-			refs="refs/tags refs/heads refs/remotes"
+			refs="refs/tags refs/heads refs/remotes refs/branches"
 			;;
 		esac
 		git --git-dir="$dir" for-each-ref --format="%($format)" \
